@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day-1 React</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Click here to get a advvice</h1>
+    <button>Get Advice</button>
+    <p>You have read <strong> 0</strong> pieces of advice</p>
+    <script>
+      const h1El = document.querySelector("h1");
+      const btnEl = document.querySelector("button");
+      const strongEl = document.querySelector("strong");
+      let count = 0;
+
+      const getAdvice = async function () {
+        const response = await fetch("https://api.adviceslip.com/advice");
+        const { slip } = await response.json();
+        count++;
+
+        h1El.textContent = `${slip.advice}`;
+        strongEl.textContent = `${count}`;
+      };
+
+      btnEl.addEventListener("click", getAdvice);
+      getAdvice();
+    </script>
+  </body>
+</html>
