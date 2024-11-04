@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Rubik";
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app {
+  border: 5px solid black;
+  width: 600px;
+}
+
+.main-img {
+  display: block;
+  width: 100%;
+}
+
+.profile-info {
+  margin: 20px;
+}
+
+.profile-info h3 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.profile-info p {
+  font-size: 20px;
+}
+
+.profile-skill {
+  width: 100;
+  display: flex;
+  margin: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-item {
+  font-size: 20px;
+  padding: 10px 15px;
+  border-radius: 20px;
+}
