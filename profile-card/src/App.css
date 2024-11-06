@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Muli&display=swap");
 
 * {
   margin: 0;
@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: "Rubik";
+  font-family: "Muli";
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -16,6 +16,7 @@ body {
 
 .app {
   border: 5px solid black;
+  border-radius: 5px;
   width: 600px;
 }
 
@@ -47,6 +48,6 @@ body {
 
 .skill-item {
   font-size: 20px;
-  padding: 10px 15px;
-  border-radius: 20px;
+  padding: 5px 10px;
+  border-radius: 10px;
 }

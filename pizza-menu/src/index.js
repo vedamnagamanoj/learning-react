@@ -72,45 +72,101 @@ function Header() {
 }
 
 function Menu() {
+  // const pizzas = [];
+  const pizzas = pizzaData;
+  const numPizzas = pizzas.length;
+
   return (
     <main className="menu">
       <h2>Our Menu</h2>
-      <Pizza data={pizzaData[0]} />
+
+      {numPizzas > 0 ? (
+        <React.Fragment>
+          <p>
+            Authentic Italian cuisine. 6 createive dishes to choose from. All
+            from our stone oven, all organic,all delicious.
+          </p>
+          <ul className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizza={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </React.Fragment>
+      ) : (
+        <p>We're still working on our Menu. Please come back later 🙏</p>
+      )}
+
+      {/* <Pizza data={pizzaData[0]} />
       <Pizza data={pizzaData[1]} />
-      <Pizza data={pizzaData[2]} />
+      <Pizza data={pizzaData[2]} /> */}
     </main>
   );
 }
 
-function Pizza({ data }) {
+function Pizza({ pizza }) {
+  // if (pizza.soldOut) return null;
+
   return (
-    <div className="pizza">
-      <img src={data.photoName} alt={data.name}></img>
+    // <li className={pizza.soldOut ? "pizza sold-out" : "pizza"}>
+    <li className={`pizza ${pizza.soldOut ? "sold-out" : ""}`}>
+      <img src={pizza.photoName} alt={pizza.name}></img>
       <div>
-        <h3>{data.name}</h3>
-        <p>{data.ingredients}</p>
-        <span>{data.price + 3}</span>
+        <h3>{pizza.name}</h3>
+        <p>{pizza.ingredients}</p>
+        <span>{pizza.soldOut ? "SOLD OUT" : pizza.price}</span>
       </div>
-    </div>
+    </li>
   );
 }
 
 function Footer() {
   const hour = new Date().getHours();
 
-  const openHour = 12;
+  const openHour = 10;
   const closeHour = 22;
+  // eslint-disable-next-line
   const isOpen = hour >= openHour && hour <= closeHour;
   // console.log(isOpen);
   // alert( ? "We're Open" : "We're Closed");
   // return React.createElement("footer", null, "We're currently open");
+  // if (!isOpen)
+  //   return (
+  //     <footer className="footer">
+  //       <div className="order">
+  //         <p>
+  //           We're happy to welcome you between {openHour}:00 and {closeHour}:00.
+  //           😊
+  //         </p>
+  //       </div>
+  //     </footer>
+  //   );
+
   return (
     <footer
       className="footer
     "
     >
-      {new Date().toLocaleTimeString()} We're currently open
+      {isOpen ? (
+        <Order openHour={openHour} closeHour={closeHour} />
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}
+          :00. 😊
+        </p>
+      )}
     </footer>
+  );
+}
+
+function Order({ openHour, closeHour }) {
+  return (
+    <div className="order">
+      <p>
+        We're open from {openHour}:00 to {closeHour}:00, Come visit us or order
+        online ❣️
+      </p>
+      <button className="btn">Order</button>
+    </div>
   );
 }
 
@@ -126,3 +182,5 @@ root.render(
 // // React before 18
 
 // React.render(<App />, document.getElementById("root"));
+
+// Authentic Italian cuisine. 6 createive dishes to choose from. All from our stone oven, all organic,all delicious.

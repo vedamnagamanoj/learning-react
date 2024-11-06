@@ -1,25 +1,43 @@
 import "./App.css";
 
 const skills = [
-  { name: "HTML+CSS", color: "red", emoji: "💣" },
-  { name: "JavaScript", color: "green", emoji: "🔥" },
-  { name: "WebDesign", color: "blue", emoji: "🔮" },
-  { name: "Git & Github", color: "cyan", emoji: "🧨" },
-  { name: "React", color: "magenta", emoji: "🎯" },
-  { name: "Java", color: "yellow", emoji: "🪅" },
+  { name: "HTML+CSS", color: "red", level: "intermediate" },
+  {
+    name: "JavaScript",
+    color: "lightgreen",
+    level: "advanced",
+  },
+  {
+    name: "WebDesign",
+    color: "lightblue",
+    level: "beginner",
+  },
+  {
+    name: "Git & Github",
+    color: "yellow",
+    level: "intermediate",
+  },
+  { name: "React", color: "cyan", level: "intermediate" },
+  { name: "Java", color: "pink", level: "advanced" },
 ];
+
+const emojis = Object.freeze({
+  beginner: "👶",
+  intermediate: "💪",
+  advanced: "💥",
+});
 
 export default function App() {
   return (
     <div className="app">
-      <MainImage />
-      <MainInfo />
-      <Skills />
+      <Avatar />
+      <Intro />
+      <SkillList />
     </div>
   );
 }
 
-function MainImage() {
+function Avatar() {
   return (
     <div className="profile-img">
       <img
@@ -31,7 +49,7 @@ function MainImage() {
   );
 }
 
-function MainInfo() {
+function Intro() {
   return (
     <div className="profile-info">
       <h3>Steven Shankar</h3>
@@ -45,16 +63,34 @@ function MainInfo() {
   );
 }
 
-function Skills() {
+// function Skills() {
+//   return (
+//     <div className="profile-skill">
+//       {skills.map((skill) => {
+//         return (
+//           <div className="skill-item" style={{ backgroundColor: skill.color }}>
+//             {skill.name} {skill.emoji}
+//           </div>
+//         );
+//       })}
+//     </div>
+//   );
+// }
+
+function SkillList() {
   return (
     <div className="profile-skill">
-      {skills.map((skill) => {
-        return (
-          <div className="skill-item" style={{ backgroundColor: skill.color }}>
-            {skill.name} {skill.emoji}
-          </div>
-        );
-      })}
+      {skills.map((skill) => (
+        <Skill skill={skill} />
+      ))}
     </div>
+  );
+}
+
+function Skill({ skill }) {
+  return (
+    <span className="skill-item" style={{ backgroundColor: skill.color }}>
+      {skill.name} {emojis[skill.level]}
+    </span>
   );
 }
