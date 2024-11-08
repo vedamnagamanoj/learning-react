@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Muli&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Muli";
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.App {
+  width: 700px;
+}
+
+.faq-item {
+  /* border-top: 3px solid grey; */
+  box-shadow: 0 0 10px grey;
+  margin-bottom: 15px;
+  padding: 12px 30px;
+}
+
+.faq-item.active {
+  border-top: 3px solid rgb(54, 163, 54);
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.faq-question span {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: rgb(167, 167, 167);
+}
+
+.faq-item.active .faq-question span {
+  color: rgb(54, 163, 54);
+}
+
+.faq-question h3 {
+  color: rgb(49, 49, 49);
+}
+
+.faq-item.active .faq-question h3 {
+  color: rgb(54, 163, 54);
+}
+
+.faq-question button {
+  border: none;
+  background-color: inherit;
+  font-family: inherit;
+  font-size: 2rem;
+  padding: 0 10px;
+  cursor: pointer;
+}
+.faq-question button:focus {
+  outline: none;
+}
+
+.faq-answer {
+  margin-bottom: 15px;
+}
+
+.hidden {
+  display: none;
+}
