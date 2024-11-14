@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-// import "./index.css";
-// import App from "./App";
+import "./index.css";
+import App from "./App";
 
 // import StarRating from "./StarRating";
 // import "./StarRating.css";
 
-import App from "./TextExpander";
-import "./TextExpander.css";
+// import App from "./TextExpander";
+// import "./TextExpander.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -39,7 +39,7 @@ root.render(
 
 //     <StarRating
 //       maxRating={10}
-//       messages={["Terrible", "Bad", "Average", "Good", "Amazing"]}
+//       messages={["Terrible", "Bad", "Average", "Good", "Amazing"]
 //       color="red"
 //       size={24}
 //     />
