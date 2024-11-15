@@ -9,6 +9,9 @@ import App from "./App";
 // import App from "./TextExpander";
 // import "./TextExpander.css";
 
+// import CurrencyConverter from "./CurrencyConverter";
+// import "./CurrencyConverter.css";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>

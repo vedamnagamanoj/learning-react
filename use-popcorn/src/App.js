@@ -57,7 +57,7 @@ export default function App() {
   const [watched, setWatched] = useState(tempWatchedData);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [query, setQuery] = useState("rangasthalam");
+  const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
   // const getMovies = async function () {
@@ -91,22 +91,25 @@ export default function App() {
   }
 
   useEffect(() => {
+    const controller = new AbortController();
     async function fetchMovies() {
       try {
         setError("");
         setIsLoading(true);
         const response = await fetch(
-          `http://www.omdbapi.com/?apikey=${myAPIKey}&s=${query}`
+          `http://www.omdbapi.com/?apikey=${myAPIKey}&s=${query}`,
+          { signal: controller.signal }
         );
         if (!response.ok) throw new Error();
         // throw new Error("Something went wrong with fetching movies");
         const data = await response.json();
-        console.log(data);
+
         if (data.Response === "False") throw new Error(data.Error);
 
         setMovies(data.Search);
+        setError("");
       } catch (err) {
-        setError(err.message);
+        if (err.name !== "AbortError") setError(err.message);
       } finally {
         setIsLoading(false);
       }
@@ -117,10 +120,13 @@ export default function App() {
       setError("");
       return;
     }
-
+    handleCloseMovie();
     fetchMovies();
+
+    return () => {
+      controller.abort();
+    };
   }, [query]);
-  console.log(watched);
 
   return (
     <>
@@ -309,6 +315,29 @@ function MovieDetails({ selectedId, watched, onCloseMovie, onAddWatched }) {
     },
     [selectedId]
   );
+
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = `Movie | ${title}`;
+
+      return () => {
+        document.title = "usePopcorn";
+      };
+    },
+    [title]
+  );
+
+  useEffect(() => {
+    const closeDetails = (evnt) => {
+      if (evnt.code === "Escape") {
+        onCloseMovie();
+      }
+    };
+    document.addEventListener("keydown", closeDetails);
+
+    return () => document.removeEventListener("keydown", closeDetails);
+  }, [onCloseMovie]);
 
   return (
     <div className="details">
