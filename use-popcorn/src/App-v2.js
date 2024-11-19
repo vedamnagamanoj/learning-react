@@ -1,23 +1,64 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
-import { useMovies } from "./useMovies";
-import { useLocalStorage } from "./useLocalStorage";
-import { useKey } from "./useKey";
+
+const tempMovieData = [
+  {
+    imdbID: "tt1375666",
+    title: "Inception",
+    year: "2010",
+    poster:
+      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
+  },
+  {
+    imdbID: "tt0133093",
+    title: "The Matrix",
+    year: "1999",
+    poster:
+      "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
+  },
+  {
+    imdbID: "tt6751668",
+    title: "Parasite",
+    year: "2019",
+    poster:
+      "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
+  },
+];
+
+const tempWatchedData = [
+  {
+    imdbID: "tt1375666",
+    title: "Inception",
+    year: "2010",
+    poster:
+      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
+    runtime: 148,
+    imdbRating: 8.8,
+    userRating: 10,
+  },
+  {
+    imdbID: "tt0088763",
+    title: "Back to the Future",
+    year: "1985",
+    poster:
+      "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
+    runtime: 116,
+    imdbRating: 8.5,
+    userRating: 9,
+  },
+];
 
 const myAPIKey = "de05debd";
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState(tempWatchedData);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  // const [watched, setWatched] = useState(() =>
-  //   JSON.parse(localStorage.getItem("watchedData"))
-  // );
-
-  const [watched, setWatched] = useLocalStorage([], "watched");
-
-  const { movies, isLoading, error } = useMovies(query);
 
   function handleSelectMovie(id) {
     setSelectedId((currId) => (id === currId ? null : id));
@@ -27,14 +68,11 @@ export default function App() {
   }
 
   function handleAddWatched(newMovie) {
-    // setWatched((currWatched) =>
-    //   currWatched.some((movie) => movie.imdbID === newMovie.imdbID)
-    //     ? currWatched
-    //     : [...currWatched, newMovie]
-    // );
-    setWatched((currWatched) => [...watched, newMovie]);
-
-    // localStorage.setItem("watchedData", JSON.stringify([...watched, newMovie]));
+    setWatched((currWatched) =>
+      currWatched.some((movie) => movie.imdbID === newMovie.imdbID)
+        ? currWatched
+        : [...currWatched, newMovie]
+    );
   }
 
   function handleDeleteWatched(id) {
@@ -43,9 +81,43 @@ export default function App() {
     );
   }
 
-  // useEffect(() => {
-  //   localStorage.setItem("watchedData", JSON.stringify(watched));
-  // }, [watched]);
+  useEffect(() => {
+    const controller = new AbortController();
+    async function fetchMovies() {
+      try {
+        setError("");
+        setIsLoading(true);
+        const response = await fetch(
+          `http://www.omdbapi.com/?apikey=${myAPIKey}&s=${query}`,
+          { signal: controller.signal }
+        );
+        if (!response.ok) throw new Error();
+        // throw new Error("Something went wrong with fetching movies");
+        const data = await response.json();
+
+        if (data.Response === "False") throw new Error(data.Error);
+
+        setMovies(data.Search);
+        setError("");
+      } catch (err) {
+        if (err.name !== "AbortError") setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (!query.length) {
+      setMovies([]);
+      setError("");
+      return;
+    }
+    handleCloseMovie();
+    fetchMovies();
+
+    return () => {
+      controller.abort();
+    };
+  }, [query]);
 
   return (
     <>
@@ -114,21 +186,6 @@ function Logo() {
   );
 }
 function Search({ query, setQuery }) {
-  const inputEl = useRef(null);
-
-  useKey("Enter", "keydown", () => {
-    if (document.activeElement === inputEl.current) return;
-
-    inputEl.current.focus();
-    setQuery("");
-  });
-
-  // useEffect(() => {
-  //   const el = document.querySelector(".search");
-  //   console.log(el);
-  //   el.focus();
-  // }, []);
-
   return (
     <input
       className="search"
@@ -136,7 +193,6 @@ function Search({ query, setQuery }) {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setQuery(e.target.value)}
-      ref={inputEl}
     />
   );
 }
@@ -201,10 +257,6 @@ function MovieDetails({ selectedId, watched, onCloseMovie, onAddWatched }) {
     (movie) => movie.imdbID === selectedId
   )?.userRating;
 
-  const countRef = useRef(0);
-  useEffect(() => {
-    if (userRating) countRef.current++;
-  }, [userRating]);
   const {
     Title: title,
     Year: year,
@@ -218,20 +270,6 @@ function MovieDetails({ selectedId, watched, onCloseMovie, onAddWatched }) {
     Genre: genre,
   } = movie;
 
-  // NO conditional rendering
-  /* eslint-disable */
-  // if (imdbRating > 8) [isTop, setIsTop] = useState(true);
-  // No early return
-  // if (imdbRating > 8) return <p>Greatest Ever</p>;
-
-  // useEffect(() => {
-
-  //   const isTop = imdbRating > 8;
-  //   console.log(isTop);
-  // }, [imdbRating]);
-
-  // const [avgRating, setAvgRating] = useState(0);
-
   function handlerAdd() {
     const newWatchedMovie = {
       imdbID: selectedId,
@@ -241,15 +279,9 @@ function MovieDetails({ selectedId, watched, onCloseMovie, onAddWatched }) {
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(" ").at(0)),
       userRating,
-      countRatingDecisions: countRef.current,
     };
     onAddWatched(newWatchedMovie);
-
     onCloseMovie();
-
-    //   setAvgRating(Number(imdbRating));
-    //   setAvgRating((currAvgRating) => (currAvgRating + userRating) / 2);
-    // }
   }
 
   useEffect(
@@ -287,18 +319,16 @@ function MovieDetails({ selectedId, watched, onCloseMovie, onAddWatched }) {
     [title]
   );
 
-  // useEffect(() => {
-  //   const closeDetails = (evnt) => {
-  //     if (evnt.code === "Escape") {
-  //       onCloseMovie();
-  //     }
-  //   };
-  //   document.addEventListener("keydown", closeDetails);
+  useEffect(() => {
+    const closeDetails = (evnt) => {
+      if (evnt.code === "Escape") {
+        onCloseMovie();
+      }
+    };
+    document.addEventListener("keydown", closeDetails);
 
-  //   return () => document.removeEventListener("keydown", closeDetails);
-  // }, [onCloseMovie]);
-
-  useKey("Escape", "keydown", onCloseMovie);
+    return () => document.removeEventListener("keydown", closeDetails);
+  }, [onCloseMovie]);
 
   return (
     <div className="details">
