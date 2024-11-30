@@ -1,0 +1,28 @@
+{
+  "cities": [
+    {
+      "id": "06f7",
+      "cityName": "Yesero",
+      "country": "Spain",
+      "emoji": "🇪🇸",
+      "date": "2024-11-30T04:43:44.895Z",
+      "notes": "asdasdas",
+      "position": {
+        "lat": "42.65125185426272",
+        "lng": "-0.2197158341550476"
+      }
+    },
+    {
+      "id": "96f4",
+      "cityName": "Calamocha",
+      "country": "Spain",
+      "emoji": "🇪🇸",
+      "date": "2024-11-30T04:51:32.571Z",
+      "notes": "teste",
+      "position": {
+        "lat": "40.88455856982592",
+        "lng": "-1.3402800658291338"
+      }
+    }
+  ]
+}
