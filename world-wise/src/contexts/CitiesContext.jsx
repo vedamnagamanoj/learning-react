@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useReducer } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+} from "react";
 
 const CitiesContext = createContext();
 const initialState = {
@@ -44,28 +51,31 @@ function CitiesProvider({ children }) {
     initialState
   );
 
-  async function getCurrentCity(id) {
-    if (+id === currentCity.id) return;
-    // setIsLoading(true);
-    dispatch({ type: "loading" });
-    try {
-      const response = await fetch(`${BASE_URL}/cities/${id}`);
-      const data = await response.json();
+  const getCurrentCity = useCallback(
+    async (id) => {
+      if (+id === currentCity.id) return;
+      // setIsLoading(true);
+      dispatch({ type: "loading" });
+      try {
+        const response = await fetch(`${BASE_URL}/cities/${id}`);
+        const data = await response.json();
 
-      // setCurrentCity(data);
-      dispatch({ type: "city/loaded", payload: data });
-    } catch (err) {
-      console.error(err);
-      dispatch({
-        type: "rejected",
-        payload: "There was error loading city data...",
-      });
-    }
-    // finally {
-    //   // setIsLoading(false);
-    //   dispatch({ type: "stopLoading" });
-    // }
-  }
+        // setCurrentCity(data);
+        dispatch({ type: "city/loaded", payload: data });
+      } catch (err) {
+        console.error(err);
+        dispatch({
+          type: "rejected",
+          payload: "There was error loading city data...",
+        });
+      }
+      // finally {
+      //   // setIsLoading(false);
+      //   dispatch({ type: "stopLoading" });
+      // }
+    },
+    [currentCity.id]
+  );
 
   async function createCity(newCity) {
     try {
