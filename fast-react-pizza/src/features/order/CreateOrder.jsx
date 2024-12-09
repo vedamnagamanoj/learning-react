@@ -66,7 +66,11 @@ function CreateOrder() {
               required
               className="tw-input w-full"
             />
-            {formErrors?.phone && <p>{formErrors.phone}</p>}
+            {formErrors?.phone && (
+              <p className="mt-2 rounded-md bg-red-100 p-2 text-xs text-red-700">
+                {formErrors.phone}
+              </p>
+            )}
           </div>
         </div>
 
@@ -91,7 +95,9 @@ function CreateOrder() {
             // value={withPriority}
             // onChange={(e) => setWithPriority(e.target.checked)}
           />
-          <label htmlFor="priority">Want to yo give your order priority?</label>
+          <label htmlFor="priority" className="font-medium">
+            Want to yo give your order priority?
+          </label>
         </div>
 
         <div>
