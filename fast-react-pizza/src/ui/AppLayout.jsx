@@ -4,8 +4,8 @@ import Header from './Header';
 import Loader from './Loader';
 
 function AppLayout() {
+  // const isCartEmpty = useSelector((state) => !(state.cart.cart.length > 0));
   const navigation = useNavigation();
-  console.log(navigation);
   const isLoading = navigation.state === 'loading';
   return (
     <div className="grid h-screen grid-rows-[auto_1fr_auto]">
@@ -16,6 +16,7 @@ function AppLayout() {
           <Outlet />
         </main>
       </div>
+      {/* {!isCartEmpty && <CartOverview />} */}
       <CartOverview />
     </div>
   );
