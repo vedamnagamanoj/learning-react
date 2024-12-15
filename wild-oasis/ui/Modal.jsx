@@ -1,4 +1,15 @@
+import {
+  cloneElement,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
+import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
+import { useOutsideClick } from "../hooks/useOutsideClick";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -48,3 +59,68 @@ const Button = styled.button`
     color: var(--color-grey-500);
   }
 `;
+
+const ModalContext = createContext();
+
+function Modal({ children }) {
+  const [openName, setOpenName] = useState("");
+
+  const open = setOpenName;
+  const close = () => setOpenName("");
+
+  return (
+    <ModalContext.Provider value={{ openName, open, close }}>
+      {children}
+    </ModalContext.Provider>
+  );
+}
+
+function Window({ name, children }) {
+  // const { openName, close } = useContext(ModalContext);
+  // const ref = useRef();
+
+  // useEffect(() => {
+  //   const handleClick = (evnt) => {
+  //     if (ref.current && !ref.current?.contains(evnt.target)) {
+  //       console.log("Clicked outside");
+  //       close();
+  //     }
+  //   };
+  //   document.addEventListener("click", handleClick, true);
+  //   return () => document.removeEventListener("click", handleClick, true);
+  // }, [close]);
+  const { openName, close } = useModal();
+  const ref = useOutsideClick(close, true);
+
+  if (name !== openName) return null;
+
+  return createPortal(
+    <Overlay>
+      <StyledModal ref={ref}>
+        <Button onClick={close}>
+          <HiXMark />
+        </Button>
+        <div>{cloneElement(children, { onCloseModal: close })}</div>
+      </StyledModal>
+    </Overlay>,
+    document.body
+  );
+}
+
+function Open({ opens: opensWindowName, children }) {
+  const { open } = useModal();
+
+  return cloneElement(children, { onClick: () => open(opensWindowName) });
+}
+
+Modal.Open = Open;
+Modal.Window = Window;
+
+function useModal() {
+  const context = useContext(ModalContext);
+  if (!context) throw new Error("Modal context used outside its provider");
+
+  return context;
+}
+export default Modal;
+export { useModal };
